@@ -1,7 +1,5 @@
 package com.unity.service;
 
-import java.io.IOException;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -25,8 +23,8 @@ public class UnityService {
 
 	@GET
 	@Path("/requestProject")
-	public Response requestProject(@QueryParam("projectid") int projectid, @QueryParam("country") String country,
-			@QueryParam("number") int number, @QueryParam("keyword") String keyword) {
+	public Response requestProject(@QueryParam("projectid") Integer projectid, @QueryParam("country") String country,
+			@QueryParam("number") Integer number, @QueryParam("keyword") String keyword) {
 		JSONObject result = new FileOperations().getProject(projectid, country, number, keyword);
 		return Response.status(200).entity(result.toString()).build();
 	}

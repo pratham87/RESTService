@@ -7,13 +7,15 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.stream.Collectors;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class FileOperations {
+public class FileOperations extends Rules {
+	Map<Integer, JSONObject> map;
 
 	public void writeToFile(String project) {
 
@@ -37,8 +39,8 @@ public class FileOperations {
 
 	}
 
-	public Map<Integer, JSONObject> getAllProjectsFromFile() {
-		Map<Integer, JSONObject> map = new TreeMap<>();
+	public void getAllProjectsFromFile() {
+		map = new HashMap<>();
 		JSONObject project;
 		String file = "/projects.txt";
 		String line = null;
@@ -53,52 +55,47 @@ public class FileOperations {
 				map.put(project.getInt("id"), project);
 			}
 			bufferedReader.close();
-			return map;
+			// return map;
 		} catch (FileNotFoundException ex) {
 			ex.printStackTrace();
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
-		return null;
+		// return null;
 	}
 
-	public JSONObject getProject(int id, String country, int number, String keyword) {
-		JSONObject result = new JSONObject();
-		Map<Integer, JSONObject> map = getAllProjectsFromFile();
-		if (map != null && map.containsKey(id)) {
-			JSONObject project = map.get(id);
-			JSONArray countries = project.getJSONArray("targetCountries");
-			for (int i = 0; i < countries.length(); i++) {
-				if (countries.getString(i).equalsIgnoreCase(country)) {
-					JSONArray targetKeys = project.getJSONArray("targetKeys");
+	public List<JSONObject> getProjectsSortedOnCost() {
+		List<JSONObject> projects = map.values().stream()
+				.filter(p -> isExpired(p) && isEnabled(p) && checkProjectURL(p)).collect(Collectors.toList());
+		projects.sort((p1, p2) -> (int) p2.getDouble("projectCost") - (int) p1.getDouble("projectCost"));
+		return projects;
+	}
 
-					for (int j = 0; j < targetKeys.length(); j++) {
-						JSONObject targetKey = targetKeys.getJSONObject(j);
-
-						if (targetKey.getInt("number") == number
-								&& targetKey.getString("keyword").equalsIgnoreCase(keyword)) {
-
-							result.put("projectName", project.getString("projectName"));
-							result.put("projectCost", project.getDouble("projectCost"));
-							result.put("projectUrl", project.getString("projectUrl"));
-
-							return result;
-						}
-
-					}
-				}
-
-			}
-
+	/**
+	 * Service should always return the matching project id if it is sent in
+	 * request. For ex. If request is
+	 * http:\\localhost:5000\requestProject?projectid=1&country=usa&number=29
+	 * then it should return a project with matching id regardless of any other
+	 * rule.
+	 */
+	public JSONObject getProject(Integer id, String country, Integer number, String keyword) {
+		getAllProjectsFromFile();
+		if (map != null && id != null && map.containsKey(id)) {
+			return map.get(id);
+		} else if (country != null && number != null && keyword != null) {
+			return noIdSearch(map, country, number, keyword);
+		} else {
+			return highestPrice(getProjectsSortedOnCost());
 		}
-
-		return result.put("message", "no project found");
 	}
 
-	public static void main(String s[]) throws IOException {
+	public static void main(String s[]) {
 		// new FileOperations().writeToFile("{hello}");
-
-		System.out.println(new FileOperations().getProject(2, "FINLAND", 11, "games").toString());
+		// System.out.println(new FileOperations().getProject(null, "usa", 25,
+		// "movie").toString());
+		System.out.println(new FileOperations().getProject(null, null, null, null).toString());
+		// System.out.println(new FileOperations().getProject(2, "FINLAND", 11,
+		// "games").toString());
 
 	}
 
