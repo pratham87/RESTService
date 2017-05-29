@@ -3,8 +3,7 @@ package com.unity.utils;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -28,6 +27,14 @@ public class Rules {
 		return false;
 	}
 
+	public JSONObject getResult(JSONObject project) {
+		JSONObject result = new JSONObject();
+		result.put("projectName", project.getString("projectName"));
+		result.put("projectCost", project.getDouble("projectCost"));
+		result.put("projectUrl", project.getString("projectUrl"));
+		return result;
+	}
+
 	/**
 	 * Rule1: If project id is not sent in request url parameters then it should
 	 * select all the matching projects based on url parameters and return the
@@ -42,38 +49,41 @@ public class Rules {
 	 * the parameter is not matched.
 	 * 
 	 */
-	public JSONObject noIdSearch(Map<Integer, JSONObject> map, String country, int number, String keyword) {
-		JSONObject result = new JSONObject();
-		List<JSONObject> projects = map.values().stream().collect(Collectors.toList());
+	public JSONObject noIdSearch(List<JSONObject> projects, String country, Integer number, String keyword) {
 		for (JSONObject project : projects) {
-			if (isExpired(project) && isEnabled(project) && checkProjectURL(project)) {
+			JSONArray countries = project.getJSONArray("targetCountries");
+			for (int i = 0; i < countries.length(); i++) {
+				if (countries.getString(i).equalsIgnoreCase(country)) {
 
-				JSONArray countries = project.getJSONArray("targetCountries");
-				for (int i = 0; i < countries.length(); i++) {
-					if (countries.getString(i).equalsIgnoreCase(country)) {
+					if (number != null) {
 						JSONArray targetKeys = project.getJSONArray("targetKeys");
 
 						for (int j = 0; j < targetKeys.length(); j++) {
 							JSONObject targetKey = targetKeys.getJSONObject(j);
 
-							if (targetKey.getInt("number") >= number
-									&& targetKey.getString("keyword").equalsIgnoreCase(keyword)) {
+							if (targetKey.getInt("number") >= number) {
 
-								result.put("projectName", project.getString("projectName"));
-								result.put("projectCost", project.getDouble("projectCost"));
-								result.put("projectUrl", project.getString("projectUrl"));
+								if (keyword != null) {
 
-								return result;
+									if (targetKey.getString("keyword").equalsIgnoreCase(keyword)) {
+										return getResult(project);
+									}
+
+								} else {
+									return getResult(project);
+								}
 
 							}
 
 						}
+					} else {
+						return getResult(project);
 					}
 
 				}
 			}
 		}
-		return result.put("message", "no project found");
+		return new JSONObject().put("message", "no project found");
 	}
 
 	/**
@@ -83,13 +93,9 @@ public class Rules {
 	 */
 	public JSONObject highestPrice(List<JSONObject> projects) {
 		if (projects != null && projects.size() != 0) {
-			return projects.get(0);
+			return getResult(projects.get(0));
 		}
 		return new JSONObject().put("message", "no project found");
-	}
-
-	public static void main(String[] args) {
-		isExpired(null);
 	}
 
 }

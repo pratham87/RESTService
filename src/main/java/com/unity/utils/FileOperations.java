@@ -80,12 +80,21 @@ public class FileOperations extends Rules {
 	 */
 	public JSONObject getProject(Integer id, String country, Integer number, String keyword) {
 		getAllProjectsFromFile();
-		if (map != null && id != null && map.containsKey(id)) {
-			return map.get(id);
-		} else if (country != null && number != null && keyword != null) {
-			return noIdSearch(map, country, number, keyword);
+		List<JSONObject> projects = getProjectsSortedOnCost();
+
+		if (id != null) {
+			if (map != null && map.containsKey(id)) {
+				return getResult(map.get(id));
+
+			} else {
+				return new JSONObject().put("message", "no project found");
+			}
+		} else if (country != null && number != null && keyword != null
+				|| country != null && number != null && keyword == null
+				|| country != null && number == null && keyword == null) {
+			return noIdSearch(projects, country, number, keyword);
 		} else {
-			return highestPrice(getProjectsSortedOnCost());
+			return highestPrice(projects);
 		}
 	}
 
@@ -93,7 +102,7 @@ public class FileOperations extends Rules {
 		// new FileOperations().writeToFile("{hello}");
 		// System.out.println(new FileOperations().getProject(null, "usa", 25,
 		// "movie").toString());
-		System.out.println(new FileOperations().getProject(null, null, null, null).toString());
+		System.out.println(new FileOperations().getProject(null, "usa", 25, "movie").toString());
 		// System.out.println(new FileOperations().getProject(2, "FINLAND", 11,
 		// "games").toString());
 
