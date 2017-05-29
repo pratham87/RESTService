@@ -36,7 +36,6 @@ public class FileOperations extends Rules {
 				System.out.println("File updated");
 				return true;
 			}
-			// bufferedWriter.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -108,7 +107,7 @@ public class FileOperations extends Rules {
 		// new FileOperations().writeToFile("{hello}");
 		// System.out.println(new FileOperations().getProject(null, "usa", 25,
 		// "movie").toString());
-		System.out.println(new FileOperations().getProject(1, null, null, null).toString());
+		System.out.println(new FileOperations().getProject(null, null, null, null).toString());
 		// System.out.println(new FileOperations().getProject(2, "FINLAND", 11,
 		// "games").toString());
 

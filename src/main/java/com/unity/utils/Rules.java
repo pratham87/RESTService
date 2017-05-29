@@ -71,41 +71,48 @@ public class Rules {
 	 * 
 	 */
 	public JSONObject noIdSearch(List<JSONObject> projects, String country, Integer number, String keyword) {
-		if (projects != null && projects.size() != 0) {
-			for (JSONObject project : projects) {
-				JSONArray countries = project.getJSONArray("targetCountries");
-				for (int i = 0; i < countries.length(); i++) {
-					if (countries.getString(i).equalsIgnoreCase(country)) {
+		try {
+			if (projects != null && projects.size() != 0) {
+				for (JSONObject project : projects) {
+					if (!project.isNull("targetCountries")) {
+						JSONArray countries = project.getJSONArray("targetCountries");
+						for (int i = 0; i < countries.length(); i++) {
+							if (countries.getString(i).equalsIgnoreCase(country)) {
 
-						if (number != null) {
-							JSONArray targetKeys = project.getJSONArray("targetKeys");
+								if (number != null) {
+									JSONArray targetKeys = project.getJSONArray("targetKeys");
 
-							for (int j = 0; j < targetKeys.length(); j++) {
-								JSONObject targetKey = targetKeys.getJSONObject(j);
+									for (int j = 0; j < targetKeys.length(); j++) {
+										JSONObject targetKey = targetKeys.getJSONObject(j);
 
-								if (targetKey.getInt("number") >= number) {
+										if (targetKey.getInt("number") >= number) {
 
-									if (keyword != null) {
+											if (keyword != null) {
 
-										if (targetKey.getString("keyword").equalsIgnoreCase(keyword)) {
-											return getResult(project);
+												if (targetKey.getString("keyword").equalsIgnoreCase(keyword)) {
+													return getResult(project);
+												}
+
+											} else {
+												return getResult(project);
+											}
+
 										}
 
-									} else {
-										return getResult(project);
 									}
-
+								} else {
+									return getResult(project);
 								}
 
 							}
-						} else {
-							return getResult(project);
 						}
-
 					}
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
 		return new JSONObject().put("message", "no project found");
 	}
 
