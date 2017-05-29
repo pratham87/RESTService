@@ -17,9 +17,10 @@ import org.json.JSONObject;
 public class FileOperations extends Rules {
 	Map<Integer, JSONObject> map;
 
-	public void writeToFile(String project) {
+	public boolean writeToFile(String projectJSON) throws IOException {
 
 		File file = new File(System.getProperty("user.home"), "projects.txt");
+		BufferedWriter bufferedWriter = null;
 
 		try {
 			if (!file.exists()) {
@@ -28,15 +29,21 @@ public class FileOperations extends Rules {
 			}
 			FileWriter fileWriter = new FileWriter(file, true);
 
-			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-			bufferedWriter.write(new JSONObject(project).toString() + "\n");
-			bufferedWriter.close();
+			bufferedWriter = new BufferedWriter(fileWriter);
+			JSONObject project = new JSONObject(projectJSON);
+			if (isValidProject(project)) {
+				bufferedWriter.write(project.toString() + "\n");
+				System.out.println("File updated");
+				return true;
+			}
+			// bufferedWriter.close();
 
-			System.out.println("File updated");
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			bufferedWriter.close();
 		}
-
+		return false;
 	}
 
 	public void getAllProjectsFromFile() {
@@ -46,22 +53,21 @@ public class FileOperations extends Rules {
 		String line = null;
 
 		try {
-			// ClassLoader classLoader = getClass().getClassLoader();
 			FileReader fileReader = new FileReader(System.getProperty("user.home") + file);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 
 			while ((line = bufferedReader.readLine()) != null) {
 				project = new JSONObject(line);
-				map.put(project.getInt("id"), project);
+				if (!project.isNull("id") && !(project.getInt("id") < 0)) {
+					map.put(project.getInt("id"), project);
+				}
 			}
 			bufferedReader.close();
-			// return map;
 		} catch (FileNotFoundException ex) {
 			ex.printStackTrace();
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
-		// return null;
 	}
 
 	public List<JSONObject> getProjectsSortedOnCost() {
@@ -102,7 +108,7 @@ public class FileOperations extends Rules {
 		// new FileOperations().writeToFile("{hello}");
 		// System.out.println(new FileOperations().getProject(null, "usa", 25,
 		// "movie").toString());
-		System.out.println(new FileOperations().getProject(null, "usa", 25, "movie").toString());
+		System.out.println(new FileOperations().getProject(1, null, null, null).toString());
 		// System.out.println(new FileOperations().getProject(2, "FINLAND", 11,
 		// "games").toString());
 

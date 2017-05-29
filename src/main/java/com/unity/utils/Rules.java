@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Rules {
@@ -17,13 +18,33 @@ public class Rules {
 	}
 
 	public boolean isEnabled(JSONObject project) {
-		return project.optBoolean("enabled", true);
+		return project.optBoolean("enabled", false);
 	}
 
 	public boolean checkProjectURL(JSONObject project) {
 		if (project.getString("projectUrl") != null) {
 			return true;
 		}
+		return false;
+	}
+
+	public boolean isValidProject(JSONObject project) {
+		try {
+
+			if (!(project.length() < 1) && !project.isNull("id") && !(project.getInt("id") < 0)
+					&& ((Integer) project.getInt("id") instanceof Integer) && !project.isNull("projectName")
+					&& (project.getString("projectName") instanceof String) && !project.isNull("expiryDate ")
+					&& (project.getString("expiryDate ") instanceof String) && !project.isNull("projectCost")
+					&& !(project.getDouble("projectCost") < 0)
+					&& ((Double) project.getDouble("projectCost") instanceof Double) && !project.isNull("projectUrl")
+					&& (project.getString("projectUrl") instanceof String)) {
+				return true;
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
 		return false;
 	}
 
@@ -50,36 +71,38 @@ public class Rules {
 	 * 
 	 */
 	public JSONObject noIdSearch(List<JSONObject> projects, String country, Integer number, String keyword) {
-		for (JSONObject project : projects) {
-			JSONArray countries = project.getJSONArray("targetCountries");
-			for (int i = 0; i < countries.length(); i++) {
-				if (countries.getString(i).equalsIgnoreCase(country)) {
+		if (projects != null && projects.size() != 0) {
+			for (JSONObject project : projects) {
+				JSONArray countries = project.getJSONArray("targetCountries");
+				for (int i = 0; i < countries.length(); i++) {
+					if (countries.getString(i).equalsIgnoreCase(country)) {
 
-					if (number != null) {
-						JSONArray targetKeys = project.getJSONArray("targetKeys");
+						if (number != null) {
+							JSONArray targetKeys = project.getJSONArray("targetKeys");
 
-						for (int j = 0; j < targetKeys.length(); j++) {
-							JSONObject targetKey = targetKeys.getJSONObject(j);
+							for (int j = 0; j < targetKeys.length(); j++) {
+								JSONObject targetKey = targetKeys.getJSONObject(j);
 
-							if (targetKey.getInt("number") >= number) {
+								if (targetKey.getInt("number") >= number) {
 
-								if (keyword != null) {
+									if (keyword != null) {
 
-									if (targetKey.getString("keyword").equalsIgnoreCase(keyword)) {
+										if (targetKey.getString("keyword").equalsIgnoreCase(keyword)) {
+											return getResult(project);
+										}
+
+									} else {
 										return getResult(project);
 									}
 
-								} else {
-									return getResult(project);
 								}
 
 							}
-
+						} else {
+							return getResult(project);
 						}
-					} else {
-						return getResult(project);
-					}
 
+					}
 				}
 			}
 		}
