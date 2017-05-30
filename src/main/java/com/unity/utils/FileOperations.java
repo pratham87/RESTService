@@ -17,6 +17,11 @@ import org.json.JSONObject;
 public class FileOperations extends Rules {
 	Map<Integer, JSONObject> map;
 
+	/**
+	 * This method will create projects.txt file at ${user.home} location if it
+	 * doesn't exist. If it exists then it will write valid projects (Strings)
+	 * to it.
+	 */
 	public boolean writeToFile(String projectJSON) throws IOException {
 		File file = new File(System.getProperty("user.home"), "projects.txt");
 		BufferedWriter bufferedWriter = null;
@@ -46,6 +51,10 @@ public class FileOperations extends Rules {
 		return false;
 	}
 
+	/**
+	 * This method will get all the projects from the file and save it to
+	 * HashMap. map is global.
+	 */
 	public void getAllProjectsFromFile() {
 		map = new HashMap<>();
 		JSONObject project;
@@ -64,12 +73,19 @@ public class FileOperations extends Rules {
 			}
 			bufferedReader.close();
 		} catch (FileNotFoundException ex) {
+			logger.error("Error finding file", ex);
 			ex.printStackTrace();
 		} catch (IOException ex) {
+			logger.error("Error reading file", ex);
 			ex.printStackTrace();
 		}
 	}
 
+	/**
+	 * This method gets the values in map as a List<JSONObject>, filters all the
+	 * projects based on expiryDate, enabled and projectURL params. Then it
+	 * sorts the list based on the projectCost param and returns the list.
+	 */
 	public List<JSONObject> getProjectsSortedOnCost() {
 		List<JSONObject> projects = map.values().stream()
 				.filter(p -> isExpired(p) && isEnabled(p) && checkProjectURL(p)).collect(Collectors.toList());
@@ -78,11 +94,7 @@ public class FileOperations extends Rules {
 	}
 
 	/**
-	 * Service should always return the matching project id if it is sent in
-	 * request. For ex. If request is
-	 * http:\\localhost:5000\requestProject?projectid=1&country=usa&number=29
-	 * then it should return a project with matching id regardless of any other
-	 * rule.
+	 * Rule 1 covered - Rules listed in README.md file.
 	 */
 	public JSONObject getProject(Integer id, String country, Integer number, String keyword) {
 		getAllProjectsFromFile();
@@ -104,7 +116,7 @@ public class FileOperations extends Rules {
 
 	public static void main(String s[]) {
 		// new FileOperations().writeToFile("{hello}");
-		System.out.println(new FileOperations().getProject(null, "finland", 10, "movie").toString());
+		System.out.println(new FileOperations().getProject(null, "usa", null, null).toString());
 
 	}
 
