@@ -37,7 +37,7 @@
 		* To save the project, make a POST call to below URL:
 		```http:\\${service-url}:${port-number}\createproject``` 
 		
-	* RequeestProject API: GET
+	* RequestProject API: GET
 		* Service should accept get request with below mentioned parameters
 		```http:\\${service-url}:${port-number}\requestproject?projectid=1&country=usa&number=29&keyword=sports```
         * Service should return projects from file (projects.txt) created in part A  
