@@ -1,12 +1,51 @@
-* ### API Calls:
-	* Service should accept get request with above mentioned parameters
-	* Service should return projects from file (projects.txt) created in part A  
-* ### Filter:
+
+* ## Unity RestService
+
+* ### **Techologies used:** 
+	* Rest Service:
+		* Eclipse IDE
+		* Jersey framework
+		* JAX-RS API
+		* Maven build tool
+		* Tomcat 8 web server
+		* Log4j
+	*  Testing:
+		* Postman: Web service tests 
+		* TestNG: Unit tests  	
+
+* ### **How to Run the service:**
+	* After git clone, please run mvn clean install and then mvn package to get the war.
+	* You can use any web server to deploy the war and hit the endpoints.
+	* I used [Tomcat 8](https://tomcat.apache.org/download-80.cgi) to deploy and run the service.
+	* Note: Please make sure your context path is set to / in server.xml
+	* For example in Tomcat 8, conf/server.xml file:
+``` <Context docBase="Unity" path="/" reloadable="true" source="org.eclipse.jst.jee.server:Unity"/></Host> ``` 
+
+* ### **Testing:**
+	* Postman:
+		* You can get Unity.postman_collection.json from the project to run all the tests in Postman.
+		* You can import the Unity.postman_collection.json in Postman and run all the tests together. 
+		* CreateProjects tests will test createProject API as well as set the test data for requestProject API tests. 
+	* TestNG: 
+		* Unit tests should execute when you run mvn clean install command.  
+
+* ### **Service Requirement:**
+* #### API Calls:
+	* CreateProject API: POST
+		* Service should make a POST call to below URL to save the project:
+		```http:\\${service-url}:${port-number}\createproject``` 
+		
+	* RequeestProject API: GET
+		* Service should accept get request with below mentioned parameters
+		```http:\\${service-url}:${port-number}\requestproject?projectid=1&country=usa&number=29&keyword=sports```
+        * Service should return projects from file (projects.txt) created in part A  
+
+* #### Filter:
 	* Service should never return a project which is expired (if today’s date is above expiry date then project should not be selected).
 	* Service should always return projects which are enabled, which means the project where “enabled”:true
 	* Service should never return a project if projectUrl is null.
 
-* ### Rules:
+* #### Rules:
 	1. Service should always return the matching project id if it is sent in request. For ex. If request is http:\\localhost:5000\requestProject?projectid=1&country=usa&number=29 then it should return a project with matching id regardless of any other rule.
 
 	2. Service should return a project with highest price if no url parameter is sent in request. Example url - http:\\localhost:5000\requestProject
