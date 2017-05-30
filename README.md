@@ -34,7 +34,7 @@
 * ### **Service Requirement: (All covered)**
 * #### API Calls:
 	* CreateProject API: POST
-		* Service should make a POST call to below URL to save the project:
+		* To save the project, make a POST call to below URL:
 		```http:\\${service-url}:${port-number}\createproject``` 
 		
 	* RequeestProject API: GET
