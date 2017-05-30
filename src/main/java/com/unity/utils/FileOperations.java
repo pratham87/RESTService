@@ -94,12 +94,14 @@ public class FileOperations extends Rules {
 	}
 
 	/**
-	 * Rule 1 covered - Rules listed in README.md file.
+	 * Rule 1 covered - Rules listed in README.md file. requestProject API calls
+	 * this method to get the project from the projects.txt file.
 	 */
 	public JSONObject getProject(Integer id, String country, Integer number, String keyword) {
 		getAllProjectsFromFile();
 		List<JSONObject> projects = getProjectsSortedOnCost();
 
+		// Return project with respective Id
 		if (id != null) {
 			if (map != null && map.containsKey(id)) {
 				return getResult(map.get(id));
@@ -107,13 +109,17 @@ public class FileOperations extends Rules {
 			} else {
 				return new JSONObject().put("message", "no project found");
 			}
+			// Return project with country, number and keyword (& operation)
 		} else if (country != null || number != null || keyword != null) {
 			return noIdSearch(projects, country, number, keyword);
 		} else {
+			// If all parameters are null then return project with highest
+			// projectCost
 			return highestPrice(projects);
 		}
 	}
 
+	// Driver method: For testing methods.
 	public static void main(String s[]) {
 		// new FileOperations().writeToFile("{hello}");
 		System.out.println(new FileOperations().getProject(null, "usa", null, null).toString());

@@ -23,12 +23,6 @@ public class RulesTest {
 		Assert.assertEquals(true, rules.isExpired(new JSONObject(json)));
 	}
 
-	// @Test(expectedExceptions = Exception.class)
-	// public void isExpiredInvalidInputTest() {
-	// String json = "{\"expiryDate \": \"hello\"}";
-	// new Rules().isExpired(new JSONObject(json));
-	// }
-
 	@Test
 	public void isEnabledTest() {
 		String json = "{\"enabled\": true}";
