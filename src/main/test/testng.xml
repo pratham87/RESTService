@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="TestAll" parallel="classes" thread-count="2">
+
+	<test name="createProject">
+		<classes>
+			<class name="com.unity.utils.FileOperationsTest" />
+		</classes>
+	</test>
+
+	<test name="requestProject">
+		<classes>
+			<class name="com.unity.utils.RulesTest" />
+		</classes>
+	</test>
+
+</suite>
