@@ -4,11 +4,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Rules {
+	final static Logger logger = Logger.getLogger(Rules.class);
 
 	public static boolean isExpired(JSONObject project) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMddyyyy HH:mm:ss");
@@ -70,15 +72,18 @@ public class Rules {
 	 * the parameter is not matched.
 	 * 
 	 */
-	public JSONObject noIdSearch(List<JSONObject> projects, String country, Integer number, String keyword) {
+	public JSONObject noIdSearch2(List<JSONObject> projects, String country, Integer number, String keyword) {
 		try {
 			if (projects != null && projects.size() != 0) {
 				for (JSONObject project : projects) {
+
+					// Get countries
 					if (!project.isNull("targetCountries")) {
 						JSONArray countries = project.getJSONArray("targetCountries");
 						for (int i = 0; i < countries.length(); i++) {
 							if (countries.getString(i).equalsIgnoreCase(country)) {
 
+								// Get number
 								if (number != null) {
 									JSONArray targetKeys = project.getJSONArray("targetKeys");
 
@@ -87,6 +92,7 @@ public class Rules {
 
 										if (targetKey.getInt("number") >= number) {
 
+											// Get keyword
 											if (keyword != null) {
 
 												if (targetKey.getString("keyword").equalsIgnoreCase(keyword)) {
@@ -114,6 +120,94 @@ public class Rules {
 		}
 
 		return new JSONObject().put("message", "no project found");
+	}
+
+	public JSONObject noIdSearch(List<JSONObject> projects, String country, Integer number, String keyword) {
+		if (projects != null && projects.size() != 0) {
+			int c = -1, n = -1, k = -1;
+			if (country != null) {
+				c = 0;
+			}
+			if (number != null) {
+				n = 0;
+			}
+
+			if (keyword != null) {
+				k = 0;
+			}
+			for (JSONObject project : projects) {
+				if (c == 0) {
+					if (checkCountry(project, country)) {
+						c = 1;
+					}
+				}
+				if (n == 0) {
+					if (checkNumber(project, number)) {
+						n = 1;
+					}
+				}
+
+				if (k == 0) {
+					if (checkKeyword(project, keyword)) {
+						k = 1;
+					}
+				}
+
+				if ((c == 1 || c == -1) && (n == 1 || n == -1) && (k == 1 || k == -1)) {
+					return getResult(project);
+				}
+
+				// Reset the values
+				if (c != -1) {
+					c = 0;
+				}
+				if (n != -1) {
+					n = 0;
+				}
+				if (k != -1) {
+					k = 0;
+				}
+
+			}
+		}
+		return new JSONObject().put("message", "no project found");
+	}
+
+	public boolean checkCountry(JSONObject project, String country) {
+		JSONArray countries = project.getJSONArray("targetCountries");
+		for (int i = 0; i < countries.length(); i++) {
+			if (countries.getString(i).equalsIgnoreCase(country)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean checkNumber(JSONObject project, int number) {
+		JSONArray targetKeys = project.getJSONArray("targetKeys");
+
+		for (int j = 0; j < targetKeys.length(); j++) {
+			JSONObject targetKey = targetKeys.getJSONObject(j);
+
+			if (targetKey.getInt("number") >= number) {
+				return true;
+			}
+
+		}
+		return false;
+	}
+
+	public boolean checkKeyword(JSONObject project, String keyword) {
+		JSONArray targetKeys = project.getJSONArray("targetKeys");
+
+		for (int j = 0; j < targetKeys.length(); j++) {
+			JSONObject targetKey = targetKeys.getJSONObject(j);
+
+			if (targetKey.getString("keyword").equalsIgnoreCase(keyword)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

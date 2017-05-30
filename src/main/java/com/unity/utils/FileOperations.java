@@ -18,14 +18,13 @@ public class FileOperations extends Rules {
 	Map<Integer, JSONObject> map;
 
 	public boolean writeToFile(String projectJSON) throws IOException {
-
 		File file = new File(System.getProperty("user.home"), "projects.txt");
 		BufferedWriter bufferedWriter = null;
 
 		try {
 			if (!file.exists()) {
-				System.out.println("Creating new file.");
 				file.createNewFile();
+				logger.info("Creating new file.");
 			}
 			FileWriter fileWriter = new FileWriter(file, true);
 
@@ -33,11 +32,13 @@ public class FileOperations extends Rules {
 			JSONObject project = new JSONObject(projectJSON);
 			if (isValidProject(project)) {
 				bufferedWriter.write(project.toString() + "\n");
+				logger.info("File updated");
 				System.out.println("File updated");
 				return true;
 			}
 
 		} catch (IOException e) {
+			logger.error("Error writing project to file", e);
 			e.printStackTrace();
 		} finally {
 			bufferedWriter.close();
@@ -94,9 +95,7 @@ public class FileOperations extends Rules {
 			} else {
 				return new JSONObject().put("message", "no project found");
 			}
-		} else if (country != null && number != null && keyword != null
-				|| country != null && number != null && keyword == null
-				|| country != null && number == null && keyword == null) {
+		} else if (country != null || number != null || keyword != null) {
 			return noIdSearch(projects, country, number, keyword);
 		} else {
 			return highestPrice(projects);
@@ -105,11 +104,7 @@ public class FileOperations extends Rules {
 
 	public static void main(String s[]) {
 		// new FileOperations().writeToFile("{hello}");
-		// System.out.println(new FileOperations().getProject(null, "usa", 25,
-		// "movie").toString());
-		System.out.println(new FileOperations().getProject(null, null, null, null).toString());
-		// System.out.println(new FileOperations().getProject(2, "FINLAND", 11,
-		// "games").toString());
+		System.out.println(new FileOperations().getProject(null, "finland", 10, "movie").toString());
 
 	}
 
