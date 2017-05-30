@@ -12,7 +12,7 @@ public class RulesTest {
 		String json = "{\"expiryDate \": \"04202017 00:00:00\"}";
 		rules = new Rules();
 
-		Assert.assertEquals(false, rules.isExpired(new JSONObject(json)));
+		Assert.assertEquals(rules.isExpired(new JSONObject(json)), false);
 	}
 
 	@Test
@@ -20,7 +20,7 @@ public class RulesTest {
 		String json = "{\"expiryDate \": \"07202017 00:00:00\"}";
 		rules = new Rules();
 
-		Assert.assertEquals(true, rules.isExpired(new JSONObject(json)));
+		Assert.assertEquals(rules.isExpired(new JSONObject(json)), true);
 	}
 
 	@Test
@@ -28,7 +28,7 @@ public class RulesTest {
 		String json = "{\"enabled\": true}";
 		rules = new Rules();
 
-		Assert.assertEquals(true, rules.isEnabled(new JSONObject(json)));
+		Assert.assertEquals(rules.isEnabled(new JSONObject(json)), true);
 	}
 
 	@Test
@@ -36,7 +36,7 @@ public class RulesTest {
 		String json = "{\"enabled\": false}";
 		rules = new Rules();
 
-		Assert.assertEquals(false, rules.isEnabled(new JSONObject(json)));
+		Assert.assertEquals(rules.isEnabled(new JSONObject(json)), false);
 	}
 
 	@Test
@@ -44,7 +44,7 @@ public class RulesTest {
 		String json = "{\"enabled\": null}";
 		rules = new Rules();
 
-		Assert.assertEquals(false, rules.isEnabled(new JSONObject(json)));
+		Assert.assertEquals(rules.isEnabled(new JSONObject(json)), false);
 	}
 
 	@Test
@@ -52,7 +52,7 @@ public class RulesTest {
 		String json = "{\"enabled\": \"hello\"}";
 		rules = new Rules();
 
-		Assert.assertEquals(false, rules.isEnabled(new JSONObject(json)));
+		Assert.assertEquals(rules.isEnabled(new JSONObject(json)), false);
 	}
 
 	@Test
@@ -60,7 +60,7 @@ public class RulesTest {
 		String json = "{\"enabled\": 123}";
 		rules = new Rules();
 
-		Assert.assertEquals(false, rules.isEnabled(new JSONObject(json)));
+		Assert.assertEquals(rules.isEnabled(new JSONObject(json)), false);
 	}
 
 	@Test
@@ -68,7 +68,7 @@ public class RulesTest {
 		String json = "{\"projectUrl\": \"http://www.unity3d.com\"}";
 		rules = new Rules();
 
-		Assert.assertEquals(true, rules.checkProjectURL(new JSONObject(json)));
+		Assert.assertEquals(rules.checkProjectURL(new JSONObject(json)), true);
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class RulesTest {
 		String json = "{\"projectUrl\": null}";
 		rules = new Rules();
 
-		Assert.assertEquals(false, rules.checkProjectURL(new JSONObject(json)));
+		Assert.assertEquals(rules.checkProjectURL(new JSONObject(json)), false);
 	}
 
 	@Test
@@ -84,6 +84,6 @@ public class RulesTest {
 		String json = "{\"projectUrl\": 123}";
 		rules = new Rules();
 
-		Assert.assertEquals(false, rules.checkProjectURL(new JSONObject(json)));
+		Assert.assertEquals(rules.checkProjectURL(new JSONObject(json)), false);
 	}
 }
