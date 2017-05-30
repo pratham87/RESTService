@@ -14,9 +14,10 @@
 		* TestNG: Unit tests  	
 
 * ### **How to Run the service:**
-	* After git clone, please run mvn clean install and then mvn package to get the war.
+	* After git clone, please run ```mvn clean install``` and then ```mvn package``` to generate the war.
 	* You can use any web server to deploy the war and hit the endpoints.
 	* I used [Tomcat 8](https://tomcat.apache.org/download-80.cgi) to deploy and run the service.
+	* In Eclipse IDE if you have server set up, then add the war to the web container and just start up the server. 
 	* Note: Please make sure your context path is set to / in server.xml
 	* For example in Tomcat 8, conf/server.xml file:
 ``` <Context docBase="Unity" path="/" reloadable="true" source="org.eclipse.jst.jee.server:Unity"/></Host> ``` 
@@ -25,11 +26,12 @@
 	* Postman:
 		* You can get Unity.postman_collection.json from the project to run all the tests in Postman.
 		* You can import the Unity.postman_collection.json in Postman and run all the tests together. 
-		* CreateProjects tests will test createProject API as well as set the test data for requestProject API tests. 
+		* CreateProjects tests will test createProject API as well as set the test data for requestProject API tests.
+		* Once tests are executed it will create projects.txt and projects.log at ${user.home} directory.  
 	* TestNG: 
-		* Unit tests should execute when you run mvn clean install command.  
+		* Unit tests should execute when you run ```mvn clean install``` command.  
 
-* ### **Service Requirement:**
+* ### **Service Requirement: (All covered)**
 * #### API Calls:
 	* CreateProject API: POST
 		* Service should make a POST call to below URL to save the project:
@@ -42,7 +44,7 @@
 
 * #### Filter:
 	* Service should never return a project which is expired (if today’s date is above expiry date then project should not be selected).
-	* Service should always return projects which are enabled, which means the project where “enabled”:true
+	* Service should always return projects which are enabled, which means the project where “enabled”:true (default will be false).
 	* Service should never return a project if projectUrl is null.
 
 * #### Rules:
