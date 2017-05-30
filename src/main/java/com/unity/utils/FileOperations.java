@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 public class FileOperations extends Rules {
-	final static Logger logger = Logger.getLogger(Rules.class);
+	final static Logger logger = Logger.getLogger(FileOperations.class);
 	Map<Integer, JSONObject> map;
 
 	/**

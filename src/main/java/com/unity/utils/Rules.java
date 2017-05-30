@@ -13,6 +13,10 @@ import org.json.JSONObject;
 public class Rules {
 	final static Logger logger = Logger.getLogger(Rules.class);
 
+	/**
+	 * This method validates JSONObject's (projects) based on expiryDate param.
+	 * Returns true if project is not expired else false.
+	 */
 	public boolean isExpired(JSONObject project) {
 		try {
 			if (!project.isNull("expiryDate ")) {
@@ -28,10 +32,18 @@ public class Rules {
 		return false;
 	}
 
+	/**
+	 * This method validates JSONObject's (projects) based on enabled param.
+	 * Returns true if project is enabled else default will be false.
+	 */
 	public boolean isEnabled(JSONObject project) {
 		return project.optBoolean("enabled", false);
 	}
 
+	/**
+	 * This method validates JSONObject's (projects) based on projectUrl param.
+	 * Returns true if project has a projectUrl else false.
+	 */
 	public boolean checkProjectURL(JSONObject project) {
 		try {
 			if (project.getString("projectUrl") != null) {
@@ -68,6 +80,11 @@ public class Rules {
 		return false;
 	}
 
+	/**
+	 * This method is used to get the final output JSONObject. It accepts a
+	 * JSONObject, gets projectName, projectCost and projectUrl params and
+	 * return a new JSONObject.
+	 */
 	public JSONObject getResult(JSONObject project) {
 		try {
 			JSONObject result = new JSONObject();
@@ -141,6 +158,10 @@ public class Rules {
 		return new JSONObject().put("message", "no project found");
 	}
 
+	/**
+	 * This method checks if the project (JSONObject) has the given country or
+	 * not. Returns true if it finds the country in the project else false.
+	 */
 	public boolean checkCountry(JSONObject project, String country) {
 		try {
 			JSONArray countries = project.getJSONArray("targetCountries");
@@ -156,6 +177,10 @@ public class Rules {
 		return false;
 	}
 
+	/**
+	 * This method checks if the project (JSONObject) has the given number or
+	 * not. Returns true if it finds the number in the project else false.
+	 */
 	public boolean checkNumber(JSONObject project, int number) {
 		try {
 			JSONArray targetKeys = project.getJSONArray("targetKeys");
@@ -175,6 +200,10 @@ public class Rules {
 		return false;
 	}
 
+	/**
+	 * This method checks if the project (JSONObject) has the given keyword or
+	 * not. Returns true if it finds the keyword in the project else false.
+	 */
 	public boolean checkKeyword(JSONObject project, String keyword) {
 		try {
 			JSONArray targetKeys = project.getJSONArray("targetKeys");
