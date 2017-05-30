@@ -12,9 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 public class FileOperations extends Rules {
+	final static Logger logger = Logger.getLogger(Rules.class);
 	Map<Integer, JSONObject> map;
 
 	/**
