@@ -35,12 +35,16 @@
 * #### API Calls:
 	* CreateProject API: POST
 		* To save the project, make a POST call to below URL:
-		```http:\\${service-url}:${port-number}\createproject``` 
+		```http:\\${service-url}:${port-number}\createproject```
+		* Time Complexity: O(1)
+		* Space Complexity: O(n)
 		
 	* RequestProject API: GET
 		* Service should accept get request with below mentioned parameters
 		```http:\\${service-url}:${port-number}\requestproject?projectid=1&country=usa&number=29&keyword=sports```
-        * Service should return projects from file (projects.txt) created in part A  
+        * Service should return projects from file (projects.txt) created in part A
+		* Time Complexity: Best: O(1), Worst: O(n)
+		* Space Complexity: O(n)
 
 * #### Filter:
 	* Service should never return a project which is expired (if today’s date is above expiry date then project should not be selected).
