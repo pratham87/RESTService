@@ -26,6 +26,7 @@
 	* Postman:
 		* You can get Unity.postman_collection.json from the project to run all the tests in Postman.
 		* You can import the Unity.postman_collection.json in Postman and run all the tests together. 
+		* All tests have localhost:8080 as host:port.
 		* CreateProjects tests will test createProject API as well as set the test data for requestProject API tests.
 		* Once tests are executed it will create projects.txt and projects.log at ${user.home} directory.  
 	* TestNG: 
