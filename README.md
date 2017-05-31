@@ -61,3 +61,15 @@
 	4. Url parameters should be considered as AND operator and not OR. Ex. if country=usa&number=30 then it should select all project which has USA in their targetCountries and number is 30 or above in their targetedKeys number.
 
 	5. Service should return {“message”:”no project found”} if any of the parameter is not matched.
+
+* ### **Algorithm:**
+	* CreateProject (POST):
+		* Every JSONObject will be saved as a String in projects.txt file.
+		* Every String will be a single line valid JSONObject (project).
+	* RequestProject (GET):
+		* Every request will get the projects from the file into a HashMap.
+		* Every Entry object has projectId as the key and JSONObject as the value.   
+		* Using HashMap, Rule 1 (above) is covered.
+		* All the projects will be collected in a List, filtered on expiryDate, enabled, projectURL and sorted on projectCost in Descending order.
+		* Thus whatever project is found first in the list will be the one with the highest projectCost and matching param's.
+		
