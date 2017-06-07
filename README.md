@@ -1,5 +1,5 @@
 
-* ## Unity RestService
+* ## Jersey RestService to create and request projects (JSONObjects) to/from a file.
 
 * ### **Techologies used:** 
 	* Rest Service:
